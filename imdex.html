@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Happy Birthday Shubhangi</title>
+<style>
+body{margin:0;overflow:hidden;font-family:Arial,sans-serif;background:linear-gradient(135deg,#3b0a6b,#5b1aa8,#7b2cbf,#9d4edd);background-size:400% 400%;animation:bg 12s ease infinite;color:white}
+@keyframes bg{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+#fireworks{position:fixed;inset:0;z-index:0}
+.card{position:relative;z-index:2;max-width:760px;margin:8vh auto;padding:35px;text-align:center;background:rgba(255,255,255,.12);backdrop-filter:blur(12px);border-radius:28px;display:none}
+h1{font-size:3rem}
+button{padding:16px 34px;border:none;border-radius:50px;font-size:20px;cursor:pointer;background:white;color:#4b0082}
+#quote{margin-top:25px;font-size:1.4rem;min-height:120px}
+.float{position:absolute;font-size:40px;animation:rise linear infinite}
+@keyframes rise{from{transform:translateY(120vh)}to{transform:translateY(-20vh)}}
+#countdownScreen{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999}
+#countdownValue{font-size:6rem;font-weight:bold}
+#countdownMessage{font-size:1.5rem;text-align:center;padding:20px}
+</style>
+</head>
+<body>
+
+<div id="countdownScreen">
+<div id="countdownValue">5</div>
+<div id="countdownMessage">Preparing birthday magic...</div>
+</div>
+
+<canvas id="fireworks"></canvas>
+
+<div class="card">
+<h1>🎉 Happy Birthday Shubhangi 🎂</h1>
+<p>Age is just a number, but kindness, laughter, and charm never go out of style. 💜</p>
+<button onclick="nextQuote()">✨ Open Your Surprise ✨</button>
+<div id="quote">Click the button to reveal a special message.</div>
+</div>
+
+<script>
+const quotes=[
+"💜 Your kindness makes people feel valued and cared for.",
+"✨ Your smile makes ordinary days brighter.",
+"🌸 Your warmth leaves a lasting impression on everyone.",
+"💫 The world needs more people with your gentle heart.",
+"🎀 Your charm comes from how you make others feel.",
+"🌟 You carry grace, positivity and strength beautifully.",
+"🦋 Your laughter spreads happiness wherever you go.",
+"💎 Your authenticity is one of your greatest qualities.",
+"🌷 You make people comfortable simply by being yourself.",
+"🎂 May this year bring you as much joy as you bring others.",
+"💜 Your positive energy makes every room brighter.",
+"✨ You are appreciated more than you know."
+];
+
+let idx=0;
+function nextQuote(){
+document.getElementById('quote').innerHTML=quotes[idx%quotes.length];
+idx++;
+burst();
+}
+
+for(let i=0;i<25;i++){
+let e=document.createElement('div');
+e.className='float';
+e.innerHTML=['🎈','💜','✨','🎉','🎂'][Math.floor(Math.random()*5)];
+e.style.left=Math.random()*100+'vw';
+e.style.animationDuration=(8+Math.random()*8)+'s';
+document.body.appendChild(e);
+}
+
+const canvas=document.getElementById('fireworks');
+const ctx=canvas.getContext('2d');
+function rs(){canvas.width=innerWidth;canvas.height=innerHeight;}
+rs();onresize=rs;
+
+let particles=[];
+function burst(){
+for(let i=0;i<120;i++){
+particles.push({
+x:innerWidth/2+(Math.random()-0.5)*300,
+y:innerHeight/2+(Math.random()-0.5)*150,
+vx:(Math.random()-0.5)*8,
+vy:(Math.random()-0.5)*8,
+life:100
+});
+}
+}
+
+function anim(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+for(let i=particles.length-1;i>=0;i--){
+let p=particles[i];
+ctx.beginPath();
+ctx.arc(p.x,p.y,3,0,6.28);
+ctx.fillStyle='hsl('+(p.life*4%360)+',100%,70%)';
+ctx.fill();
+p.x+=p.vx;
+p.y+=p.vy;
+p.life--;
+if(p.life<=0) particles.splice(i,1);
+}
+requestAnimationFrame(anim);
+}
+anim();
+
+const val=document.getElementById('countdownValue');
+const msg=document.getElementById('countdownMessage');
+
+let stage=5;
+
+let first=setInterval(()=>{
+val.innerHTML=stage;
+
+if(stage===2){
+clearInterval(first);
+
+let sec=120;
+
+let second=setInterval(()=>{
+
+val.innerHTML=sec+' sec';
+
+if(sec===90) msg.innerHTML='Polishing kindness...';
+if(sec===60) msg.innerHTML='Charging charm...';
+if(sec===30) msg.innerHTML='Collecting smiles...';
+if(sec===10) msg.innerHTML='Lighting candles...';
+
+if(sec===1){
+
+clearInterval(second);
+
+let ms=1000;
+msg.innerHTML='Switching to precision mode...';
+
+let third=setInterval(()=>{
+
+val.innerHTML=ms+' ms';
+
+if(ms===500) msg.innerHTML='Almost there...';
+if(ms===100) msg.innerHTML='Ready for surprise...';
+
+if(ms<=0){
+clearInterval(third);
+document.getElementById('countdownScreen').style.display='none';
+document.querySelector('.card').style.display='block';
+burst();burst();burst();
+setInterval(burst,3000);
+}
+ms--;
+},1);
+}
+sec--;
+},1000);
+}
+stage--;
+},1000);
+</script>
+</body>
+</html>
